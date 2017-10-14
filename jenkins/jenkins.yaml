@@ -14,3 +14,4 @@ spec:
         image: jenkins:2.32.2
         ports:
         - containerPort: 8080
+          containerPort: 50000

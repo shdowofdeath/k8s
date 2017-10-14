@@ -7,5 +7,9 @@ spec:
   ports:
     - port: 8080
       targetPort: 8080
+      name: web
+    - port: 50000 
+      targetPort: 50000
+      name: jnlp
   selector:
     app: jenkins

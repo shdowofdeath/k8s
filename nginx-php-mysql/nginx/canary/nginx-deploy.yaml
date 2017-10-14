@@ -1,0 +1,21 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: nginx2-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+      track: canary 
+  replicas: 2
+  template:  
+    metadata:
+      labels:
+        app: nginx
+        track: canary 
+    spec:
+      containers:
+      - name: nginx2
+        image: mikiha/nginx-server:2.0
+        ports:
+        - containerPort: 80

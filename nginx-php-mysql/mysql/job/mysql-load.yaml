@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mysql-load
+spec:
+  activeDeadlineSeconds: 100
+  template:
+    metadata:
+      name: load-mysql
+    spec:
+      containers:
+      - name: mysql-load
+        image: mikiha/mysql-load:1.5
+        command: ["bash", "/load.sh"]
+      restartPolicy: Never
+     
