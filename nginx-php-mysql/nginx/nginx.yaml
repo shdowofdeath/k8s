@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: mikiha/nginx-server:1.8
+        image: nginx
         ports:
         - containerPort: 80
 ---
