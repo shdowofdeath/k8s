@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: tls-nginx
-  namespace: default
+  namespace: elhay
 spec:
   tls:
   - hosts:
