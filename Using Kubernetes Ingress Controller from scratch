@@ -1,0 +1,65 @@
+Create two services(namely node1, node2)and a ingress controller. the ingress controller will route /gg1 to node1, /gg2 to node2
+step1: clone my repo :)
+step2: Create deployment
+use kubectl to create a deployment
+kebectl create -f deployment1-config.yaml
+repeat the above procedure and replace test-ingress-node1 with test-ingress-node-2
+
+use command kubectl get pods to check , it should be like this
+
+NAME                                  READY     STATUS    RESTARTS   AGE
+test-ingress-node-1-379438432-gv98l   1/1       Running   0          18h
+test-ingress-node-2-564118882-mzjx1   1/1       Running   0          17h
+
+step3: Create service connecting deployment
+
+kubectl expose deployment test-ingress-node-1 --target-port=8080 --type=NodePort
+
+repeat the above procedure and replace test-ingress-node1 with test-ingress-node-2
+
+use kubectl get services to check, it should look like this
+NAME                  CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+test-ingress-node-1   10.123.245.45    <nodes>       8080/TCP   16h
+test-ingress-node-2   10.123.245.144   <nodes>       8080/TCP   15h
+
+step4: Create Ingress controller
+kubectl run nginx --image=nginx --port=80
+
+
+kubectl expose deployment nginx --target-port=80 --type=NodePort
+
+check all pods is working
+NAME                                  READY     STATUS    RESTARTS   AGE
+nginx-2032906785-fcjgz                1/1       Running   0          17h
+test-ingress-node-1-379438432-gv98l   1/1       Running   0          18h
+test-ingress-node-2-564118882-mzjx1   1/1       Running   0          18h
+
+Step5: Setup Ingress Resource
+
+kubectl create -f ingress-config.yaml
+
+it would expose an external ip, you can check the resource by
+kubectl get ing, it should look like this
+NAME                    HOSTS     ADDRESS           PORTS     AGE
+test-node-adv-ingress   *         10.247.183.150   80        16h
+
+from here 10.247.183.150 will be the external ip which is public accessible.
+
+and you can use kubectl describe ingress test-node-adv-ingress to view its behavior, like this:
+Name:   test-node-adv-ingress
+Namespace:  default
+Address:  107.178.249.214
+Default backend: test-ingress-node-1:8080 (10.120.0.7:8080)
+Rules:
+  Host Path Backends
+  ---- ---- --------
+  *
+     /gg1  test-ingress-node-1:8080 (10.120.0.7:8080)
+     /gg2  test-ingress-node-2:8080 (10.120.0.9:8080)
+
+
+you can check /gg1 and /gg2 is route to different node
+
+PLEASE NOTE 4 THAT: it may take 5–8 minutes for the node to work with ingress, please be patient.
+
+NOTE 2: the ingress needed a root url (‘/’) send 200 ok to work
