@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-node-adv-ingress
+spec:
+  backend:
+    serviceName: test-ingress-node-1
+    servicePort: 8080
+  rules:
+  - host:
+    http:
+      paths:
+      - path: /gg1
+        backend:
+          serviceName: test-ingress-node-1
+          servicePort: 8080
+      - path: /gg2
+        backend:
+          serviceName: test-ingress-node-2
+          servicePort: 8080
