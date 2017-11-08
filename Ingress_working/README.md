@@ -11,3 +11,6 @@ kubectl create -n ingress -f nginx-ingress-controller-roles.yaml
 kubectl create -n ingress -f nginx-ingress-controller-service.yaml
 kubectl create -f app-ingress.yaml
 kubectl create -f nginx-ingress.yaml
+
+Also, add to /etc/hosts: 
+127.0.0.1 crontestsite01.com
