@@ -20,7 +20,7 @@ metadata:
   labels:
     app: my-app
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     type: Recreate
   selector:
