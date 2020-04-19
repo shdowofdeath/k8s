@@ -1,4 +1,5 @@
 import requests, os, sys, argparse
+
 def get_args():
     """
     getting all args from user
@@ -21,12 +22,15 @@ def get_args():
         '-d', '--debug', type=str, help='debug mode', default=False, required=False)
     parser.add_argument(
         '-s', '--set_proxy', type=str, help='set proxy mode', default=True, required=False)
+    parser.add_argument(
+        '-l', '--ldap', type=str, help='ldap enabled', default='false', required=False)
     args = parser.parse_args()
     username = args.username
     password = args.password
+    debug = args.debug
+    ldap = args.ldap
     master_ip = args.master_ip
     cluster_name = args.cluster_name
-    debug = args.debug
     port = args.port
     set_proxy = args.set_proxy
     global home
@@ -35,10 +39,10 @@ def get_args():
         print (port)
 
     home = os.environ['HOME']
-    get_cred(username, password, master_ip, debug, cluster_name, port, set_proxy)
+    get_cred(username, password, master_ip, debug, cluster_name, port, set_proxy , ldap)
 
 
-def get_cred(username, password, master_ip, debug, cluster_name, port, set_proxy):
+def get_cred(username, password, master_ip, debug, cluster_name, port, set_proxy ,ldap):
     """
     :param username: it's the user name for connecting k8s
     :param password: it's the password for connecting k8s
@@ -65,7 +69,12 @@ def get_cred(username, password, master_ip, debug, cluster_name, port, set_proxy
     except:
         print("cannot access the cluster check ip please ", master_ip)
         sys.exit(1)
-    response = requests.request("POST", url, data=payload, headers=headers, params=querystring, verify=False)
+    if 'true' in ldap:
+        url = "https://" + master_ip + ":" + port + "/v3-public/openLdapProviders/"+ cluster_name
+        response = requests.request("POST", url, data=payload, headers=headers, params=querystring, verify=False)
+    else:
+        response = requests.request("POST", url, data=payload, headers=headers, params=querystring, verify=False)
+
     token_rancher = response.json()
     token = token_rancher['token']
     cluster_name = get_clusters(token, debug, port, master_ip)
