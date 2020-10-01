@@ -77,7 +77,8 @@ def get_cred(username, password, master_ip, debug, cluster_name, port, set_proxy
 
     token_rancher = response.json()
     token = token_rancher['token']
-    cluster_name = get_clusters(token, debug, port, master_ip)
+    if not cluster_name:
+        cluster_name = get_clusters(token, debug, port, master_ip)
     create_cred_file(token, debug, port, master_ip ,cluster_name)
 
 
